@@ -4,9 +4,9 @@ const cors = require("cors"); // Used to prevent errors when working locally
 
 // Import routes
 const userRoute = require("./routes/userRoute");
-const productRoute = require("./routes/productRoute");
+const productRoute = require("./routes/productsRoute");
 const ordersRoute = require("./routes/ordersRoute");
-const product_categoriesRoute = require("./routes/product_categoriesRoute");
+const categoriesRoute = require("./routes/categoriesRoute");
 
 // Configure Server
 const app = express(); // Initialize express as an app variable
@@ -25,7 +25,8 @@ app.use("/users", userRoute);
 app.use("/products", productRoute);
 
 app.use("/orders", ordersRoute);
-app.use("/product_categories", product_categoriesRoute);
+
+app.use("/categories", categoriesRoute);
 
 // Set up server to start listening for requests
 app.listen(app.get("port"), () => {
