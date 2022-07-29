@@ -1,11 +1,11 @@
 // Import needed libraries
 const express = require("express"); // Used to set up a server
 const cors = require("cors"); // Used to prevent errors when working locally
-
+require("dotenv").config();
 // Import routes
 const userRoute = require("./routes/userRoute");
-const productRoute = require("./routes/productsRoute");
-const ordersRoute = require("./routes/ordersRoute");
+const productsRoute = require("./routes/productsRoute");
+const orderRoute = require("./routes/orderRoute");
 const categoriesRoute = require("./routes/categoriesRoute");
 
 // Configure Server
@@ -22,9 +22,9 @@ app.get("/", (req, res) => {
 // Use individual routes when visiting these URLS
 app.use("/users", userRoute);
 
-app.use("/products", productRoute);
+app.use("/products", productsRoute);
 
-app.use("/orders", ordersRoute);
+app.use("/order", orderRoute);
 
 app.use("/categories", categoriesRoute);
 
@@ -33,4 +33,6 @@ app.listen(app.get("port"), () => {
   console.log(`Listening for calls on port ${app.get("port")}`);
   console.log("Press Ctrl+C to exit server");
 });
+
+
 

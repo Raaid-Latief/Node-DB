@@ -4,7 +4,7 @@ const con = require("../lib/db_connection");
 
 router.get("/", (req, res) => {
     try {
-        con.query("SELECT * FROM users", (err, result) => {
+        con.query("SELECT * FROM orders", (err, result) => {
             if (err) throw err;
             res.send(result);
         });
@@ -26,7 +26,7 @@ const {email,
 } = req.body    
 try {
     con.query(
-        `INSERT INTO users (email, password, full_name, billing_address, default_shipping_address, country, phone, user_type) values ('${email}', '${password}', '${full_name}', '${billing_address}','${default_shipping_address}', '${country}', '${phone}',  '${user_type}') `, 
+        `INSERT INTO orders (email, password, full_name, billing_address, default_shipping_address, country, phone, user_type) values ('${email}', '${password}', '${full_name}', '${billing_address}','${default_shipping_address}', '${country}', '${phone}',  '${user_type}') `, 
     (err, result) => {
         if (err) throw err;
         res.send(result);
@@ -40,20 +40,22 @@ try {
 
 // delete 
 // 
-router.delete("/users/:id", (req, res) => {
-  try {
-    let sql = "DELETE FROM users WHERE ?";
-    let user = {
-      user_id: req.params.id,
-    };
-    con.query(sql, user, (err, result) => {
-      if (err) throw err;
-      res.send("User successfully removed");
-    });
-  } catch (error) {
-    console.log(error);
-  }
-});
+
+router.delete("/orders/:id", (req, res) => {
+    try {
+      let sql = "DELETE FROM orders WHERE ?";
+      let user = {
+        user_id: req.params.id,
+      };
+      con.query(sql, user, (err, result) => {
+        if (err) throw err;
+        res.send("User successfully removed");
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
 
   const bcrypt = require('bcryptjs');
 
@@ -61,7 +63,7 @@ router.delete("/users/:id", (req, res) => {
 // The Route where Encryption starts
 router.post("/register", (req, res) => {
   try {
-    let sql = "INSERT INTO users SET ?";
+    let sql = "INSERT INTO orders SET ?";
 
     // body im requesting
     const {
@@ -110,7 +112,7 @@ router.post("/register", (req, res) => {
 router.post("/login", (req, res) => {
   try {
 // check if email exists from db
-    let sql = "SELECT * FROM users WHERE ?";
+    let sql = "SELECT * FROM orders WHERE ?";
     let user = {
       email: req.body.email,
       
@@ -149,7 +151,7 @@ const jwt = require('jsonwebtoken');
 // Login
 router.post("/login", (req, res) => {
   try {
-    let sql = "SELECT * FROM users WHERE ?";
+    let sql = "SELECT * FROM orders WHERE ?";
     let user = {
       email: req.body.email,
     };
