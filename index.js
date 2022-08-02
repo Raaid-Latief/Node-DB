@@ -5,27 +5,24 @@ require("dotenv").config();
 // Import routes
 const userRoute = require("./routes/userRoute");
 const productsRoute = require("./routes/productsRoute");
-const orderRoute = require("./routes/orderRoute");
-const categoriesRoute = require("./routes/categoriesRoute");
+const ordersRoute = require("./routes/orders");
+const categoriesRoute = require("./routes/categories");
 
 // Configure Server
 const app = express(); // Initialize express as an app variable
 app.set("port", process.env.PORT || 6969); // Set the port
 app.use(express.json()); // Enable the server to handle JSON requests
 app.use(cors()); // Dont let local development give errors
-
+app.use(express.static('public')) // Used for static webpage
 // This is where we check URLs and Request methods to create functionality
 // GET '/' is always what will be displayed on the home page of your application
 app.get("/", (req, res) => {
-  res.json({ msg: "Welcome" });
+  res.sendFile(__dirname + "/" + "index.html");
 });
 // Use individual routes when visiting these URLS
 app.use("/users", userRoute);
-
 app.use("/products", productsRoute);
-
-app.use("/order", orderRoute);
-
+app.use("/orders", ordersRoute);
 app.use("/categories", categoriesRoute);
 
 // Set up server to start listening for requests
@@ -33,6 +30,5 @@ app.listen(app.get("port"), () => {
   console.log(`Listening for calls on port ${app.get("port")}`);
   console.log("Press Ctrl+C to exit server");
 });
-
 
 

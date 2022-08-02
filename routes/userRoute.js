@@ -1,69 +1,114 @@
 const express = require("express");
 const router = express.Router();
-const con = require("../lib/db_connection");
+const con = require("../lib/dbConnection");
+const middleware = require("../middleware/auth");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
 router.get("/", (req, res) => {
-    try {
-        con.query("SELECT * FROM users", (err, result) => {
-            if (err) throw err;
-            res.send(result);
-        });
-    } catch (error) {
-        console.log(error);
-        res.status(400).send(error)
-    }
-});
-
-router.post('/', (req, res)=> {
-const {email, 
-    password, 
-    full_name, 
-    billing_address, 
-    default_shipping_address, 
-    country, 
-    phone, 
-    user_type
-} = req.body    
-try {
-    con.query(
-        `INSERT INTO users (email, password, full_name, billing_address, default_shipping_address, country, phone, user_type) values ('${email}', '${password}', '${full_name}', '${billing_address}','${default_shipping_address}', '${country}', '${phone}',  '${user_type}') `, 
-    (err, result) => {
-        if (err) throw err;
-        res.send(result);
-    });
-} catch (error) {
-    console.log(error)
-    
-}
-});
-
-
-// delete 
-// 
-router.delete("/users/:id", (req, res) => {
   try {
-    let sql = "DELETE FROM users WHERE ?";
-    let user = {
-      user_id: req.params.id,
-    };
-    con.query(sql, user, (err, result) => {
+    con.query("SELECT * FROM users", (err, result) => {
       if (err) throw err;
-      res.send("User successfully removed");
+      res.send(result);
     });
   } catch (error) {
     console.log(error);
   }
 });
 
-  const bcrypt = require('bcryptjs');
+// Gets one users
+router.get("/:id", (req, res) => {
+  try {
+    con.query(
+      `SELECT * FROM users where user_id =${req.params.id} `,
+      (err, result) => {
+        if (err) throw err;
+        res.send(result);
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    res.status(400).send(error);
+  }
+});
+// add new user
+router.post("/", (req, res) => {
+  if (req.user.user_type === "admin") {
+    const {
+      email,
+      password,
+      full_name,
+      billing_address,
+      default_shipping_address,
+      country,
+      phone,
+      user_type,
+    } = req.body;
+    try {
+      con.query(
+        `INSERT into users (email, password,full_name,billing_address,default_shipping_address,country,phone, user_type) values ("${email}" , '${password}', '${full_name}', '${billing_address}', '${default_shipping_address}', '${country}' , '${phone}' , '${user_type}')`,
+        (err, result) => {
+          if (err) throw err;
+          res.send(result);
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    res.send("Access Denied");
+  }
+});
+// edit user
+router.put("/:id", (req, res) => {
+  if (req.user.user_type === "admin") {
+    const {
+      email,
+      password,
+      full_name,
+      billing_address,
+      default_shipping_address,
+      country,
+      phone,
+      user_type,
+    } = req.body;
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(password, salt);
+    try {
+      con.query(
+        `UPDATE users SET email="${email}",password="${hash}",full_name="${full_name}",billing_address="${billing_address}",default_shipping_address="${default_shipping_address}",country="${country}",phone="${phone}",user_type="${user_type}" WHERE users.user_id="${req.params.id}"`,
+        (err, result) => {
+          if (err) throw err;
+          res.send(result);
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    res.send("Access Denied");
+  }
+});
+// delete user
+router.delete("/:id", (req, res) => {
+  try {
+    con.query(
+      `DELETE FROM users  WHERE users.user_id="${req.params.id}"`,
+      (err, result) => {
+        if (err) throw err;
+        res.send(result);
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 // Register Route
 // The Route where Encryption starts
 router.post("/register", (req, res) => {
   try {
     let sql = "INSERT INTO users SET ?";
-
-    // body im requesting
     const {
       full_name,
       email,
@@ -76,11 +121,9 @@ router.post("/register", (req, res) => {
     } = req.body;
 
     // The start of hashing / encryption
-    // length of characters
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(password, salt);
 
-    // database terms
     let user = {
       full_name,
       email,
@@ -92,8 +135,6 @@ router.post("/register", (req, res) => {
       billing_address,
       default_shipping_address,
     };
-
-    // connection to database
     con.query(sql, user, (err, result) => {
       if (err) throw err;
       console.log(result);
@@ -103,48 +144,6 @@ router.post("/register", (req, res) => {
     console.log(error);
   }
 });
-
-
-// Login
-// The Route where Decryption happens
-router.post("/login", (req, res) => {
-  try {
-// check if email exists from db
-    let sql = "SELECT * FROM users WHERE ?";
-    let user = {
-      email: req.body.email,
-      
-    };
-
-    // connect to db
-    con.query(sql, user, async (err, result) => {
-      if (err) throw err;
-      if (result.length === 0) {
-        res.send("Email not found please register");
-      } else {
-        // Decryption
-        // Accepts the password stored in database and the password given by user (req.body)
-        const isMatch = await bcrypt.compare(
-          req.body.password,
-          result[0].password
-        );
-        // If password does not match, exclamation means false
-        if (!isMatch) {
-          res.send("Password incorrect");
-        }
-        else {
-          res.send(result)
-        }
-      }
-    });
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-// creating a token
-
-const jwt = require('jsonwebtoken');
 
 // Login
 router.post("/login", (req, res) => {
@@ -198,5 +197,19 @@ router.post("/login", (req, res) => {
   }
 });
 
+// Verify
+router.get("/users/verify", (req, res) => {
+  const token = req.header("x-auth-token");
+  jwt.verify(token, process.env.jwtSecret, (error, decodedToken) => {
+    if (error) {
+      res.status(401).json({
+        msg: "Unauthorized Access!",
+      });
+    } else {
+      res.status(200);
+      res.send(decodedToken);
+    }
+  });
+});
 
 module.exports = router;

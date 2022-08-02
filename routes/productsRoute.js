@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const con = require("../lib/db_connection");
+const con = require("../lib/dbConnection");
 
 router.get("/", (req, res) => {
     try {
@@ -43,5 +43,20 @@ try {
     
 }
 });
+
+// delete products
+router.delete("/:id", (req, res) => {
+    try {
+      con.query(
+        `DELETE FROM products  WHERE products.product_id="${req.params.id}"`,
+        (err, result) => {
+          if (err) throw err;
+          res.send(result);
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  });
 
 module.exports = router;
