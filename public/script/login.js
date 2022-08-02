@@ -1,0 +1,1 @@
+fetch('http://localhost:6969/users').then((res) => res.json()).then((data) => {console.log(data)})
