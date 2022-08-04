@@ -8,7 +8,7 @@
     <style>
 @import url('https://fonts.googleapis.com/css?family=Muli&display=swap');
 
-* {
+/* * {
     box-sizing: border-box;
 }
 
@@ -114,21 +114,33 @@ body {
             <h1>Please Login</h1>
             <form>
                 <div class="form-control">
-                    <input type="text" required>
-                    <label>E-mail</label>
+                    <input type="text" placeholder ="E-mail" required>
+                    
                     
                 </div>
     
                 <div class="form-control">
-                    <input type="password" required>
-                    <label>Password</label>
+                    <input type="password" placeholder="password" required>
+                
                 </div>
                 <button class="btn">Login</button>
     
                 <p class="text">Don't have an account? <a href="#">Register</a></p>
                 <p class="text">Forgot password? <a href="#">Forgot</a></p>
             </form>
-        </div>
+        </div> */
+
+        <div class="container">
+      <div id="login" class="d-flex justify-content-center flex-column">
+        <h1 class="text-center">Login</h1>
+        <form onsubmit="Login(event)" class="text-center my-3">
+          <input type="email" placeholder="Email" id="email" />
+          <input type="text" placeholder="Password" id="password" />
+          <button type="submit">Login</button>
+        </form>
+      </div>
+
+
     
         <script src="./script/login.js"></script>
     </body>
