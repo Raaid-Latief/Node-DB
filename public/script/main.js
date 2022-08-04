@@ -3,7 +3,11 @@ alert('Please Login')
 
 let users = [];
 
+let products = [];
+
+
 const userContainer = document.getElementById("users");
+const prodContainer = document.getElementById("products");
 
 fetch('http://localhost:6969/users')
   .then((res) => res.json())
@@ -27,6 +31,36 @@ function showUsers(users) {
                 <p id="userCountry">Country: ${user.country}</p>
                 <p id="userPhone">Phone: ${user.phone}</p>
                 <p id="userType">User Type: ${user.user_type}</p>
+            </div>
+        </div>
+    </div>
+    `;
+  });
+}
+
+
+fetch('http://localhost:6969/products')
+  .then((res) => res.json())
+  .then((data) => {
+    items = data;
+    console.log(data);
+    showItems(data);
+  });
+
+function showItems(products) {
+  //   prodContainer.innerHTML = "";
+  products.forEach((product) => {
+    prodContainer.innerHTML += `
+    <div class="col-md-6 d-flex justify-content-center my-4">
+        <div id="Products" clas="w-100">
+            <div class='d-flex justify-content-center'>
+                <img id="productImage" src="${product.image}" alt=${product.name}/>
+            </div>
+            <div class='text-center'>
+                <h2 id="productName">${product.name}</h2>
+                <h4 id="productDescriptions">${product.descriptions}</h4>
+                <p id="productPrice">Price: R${product.price}</p>
+                <p id="productStock">Stock: ${product.stock}</p>
             </div>
         </div>
     </div>
