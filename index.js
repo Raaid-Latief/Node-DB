@@ -4,7 +4,7 @@ const cors = require("cors"); // Used to prevent errors when working locally
 require("dotenv").config();
 // Import routes
 const userRoute = require("./routes/userRoute");
-const productsRoute = require("./routes/productsRoute");
+const productsRoute = require("./routes/products");
 const ordersRoute = require("./routes/orders");
 const categoriesRoute = require("./routes/categories");
 

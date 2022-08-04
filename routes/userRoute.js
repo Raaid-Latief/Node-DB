@@ -90,10 +90,10 @@ router.put("/:id", (req, res) => {
   }
 });
 // delete user
-router.delete("/:id", (req, res) => {
+router.delete("/:email", (req, res) => {
   try {
     con.query(
-      `DELETE FROM users  WHERE users.user_id="${req.params.id}"`,
+      `DELETE FROM users  WHERE users.user_email="${req.params.email}"`,
       (err, result) => {
         if (err) throw err;
         res.send(result);

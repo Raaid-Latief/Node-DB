@@ -5,11 +5,11 @@ const jwt = require("jsonwebtoken");
 const middleware = require("../middleware/auth");
 
 
-// All categories
+// All products
 
 router.get("/", (req, res) => {
   try {
-    con.query("SELECT * FROM categories", (err, result) => {
+    con.query("SELECT * FROM products", (err, result) => {
       if (err) throw err;
       res.send(result);
     });
@@ -18,13 +18,13 @@ router.get("/", (req, res) => {
   }
 });
 
-// Single categories
+// Single products
 
 router.get("/:id", (req, res) => {
   id = req.params.id;
   try {
     con.query(
-      `SELECT * FROM categories WHERE categories.category_id = ${id}`,
+      `SELECT * FROM products WHERE products.product_id = ${id}`,
       (err, result) => {
         if (err) throw err;
         res.send(result);
@@ -35,22 +35,23 @@ router.get("/:id", (req, res) => {
   }
 });
 
-// Add category
+// Add product
 
 router.post("/", middleware, (req, res) => {
-  return adminController.addCategory(req, res);
+  return adminController.addProduct(req, res);
+  //   console.log(req.user);
 });
 
-// Edit category
+// Edit product
 
 router.put("/:id", middleware, (req, res) => {
-  return adminController.editCategory(req, res);
+  return adminController.editProduct(req, res);
 });
 
-// Delete category
+// Delete products
 
 router.delete("/:id", middleware, (req, res) => {
-  return adminController.deleteCategory(req, res);
+  return adminController.deleteProduct(req, res);
 });
 
-module.exports = router;  
+module.exports = router;
