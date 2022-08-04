@@ -1,7 +1,7 @@
 async function Login(e) {
     e.preventDefault();
     const response = await fetch(
-      "https://uzairs-e-commerce.herokuapp.com/users/login",
+      "https://localhost:6969/users/login",
       {
         method: "POST",
         body: JSON.stringify({
@@ -17,4 +17,4 @@ async function Login(e) {
     console.log(data);
     alert("Logged in successfully");
     return data;
-  }
+  } 

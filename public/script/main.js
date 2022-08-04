@@ -1,8 +1,7 @@
-alert('Please Login')
+
 
 
 let users = [];
-
 let products = [];
 
 
@@ -24,7 +23,7 @@ function showUsers(users) {
     <div class="col-md-6 d-flex justify-content-center my-4">
         <div id="users" clas="w-100">
             <div class='text-center'>
-                <h2 id="userId">${user.user_id}</h2>
+                <h2 id="userId" class="text-muted">${user.user_id}</h2>
                 <h4 id="userFullName">${user.full_name}</h4>
                 <p id="userBillingAddress">Billing Address: ${user.billing_address}</p>
                 <p id="userDefaultShippingAddress">Shipping Address: ${user.default_shipping_address}</p>
